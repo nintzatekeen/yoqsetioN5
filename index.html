@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="jp">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocabulario</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+    <script src="vocabularioN5.js" type="text/javascript"></script>
+    <script>
+
+        var currentIndex = 1;
+
+        function cleanTable() {
+            let table = document.querySelector("#mainTable");
+            if (table) {
+                table.querySelector("tbody").innerHTML = "";
+            }
+        }
+
+        function shuffle(array) {
+            let currentIndex = array.length,  randomIndex;
+
+            // While there remain elements to shuffle.
+            while (currentIndex != 0) {
+
+                // Pick a remaining element.
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+
+                // And swap it with the current element.
+                [array[currentIndex], array[randomIndex]] = [
+                array[randomIndex], array[currentIndex]];
+            }
+
+            return array;
+        }
+
+        function createPaginationElement(fullArray) {
+            if (fullArray) {
+                let length = fullArray.length;
+                let pages = length / 100 + ((length % 100 > 0) ? 1 : 0);
+
+
+                let nav = document.createElement("nav");
+                nav.id = "paginator";
+                let navul = document.createElement("ul");
+                navul.classList.add("pagination");
+
+                for (let i=1; i<=pages; i++) {
+                    let navli = document.createElement("li");
+                    navli.classList.add("page-item");
+                    let nava = document.createElement("a");
+                    nava.classList.add("page-link");
+                    nava.innerText = i;
+                    nava.style.cursor = "pointer";
+
+                    navli.addEventListener("click", (event) => {
+                        let element = event.currentTarget;
+                        
+                        let startIdx = i * 100 - 100;
+                        let endIdx = i * 100;
+                        
+                        if (endIdx > fullArray.length - 1) {
+                            endIdx = fullArray.length - 1;
+                        }
+                        cleanTable();
+                        writeTableElements(fullArray, startIdx, endIdx);
+                        currentIndex = i;
+                        setActiveNavItem();
+                        window.scrollTo(0, document.body.scrollHeight);
+                    });
+                    navli.appendChild(nava);
+                    navul.appendChild(navli);
+                }
+
+
+                let prevArrow = document.createElement("li");
+                prevArrow.classList.add("page-item");
+                let prevArrowA = document.createElement("a");
+                prevArrowA.classList.add("page-link");
+                prevArrowA.setAttribute("aria-label", "Previous");
+                prevArrowA.style.cursor = "pointer";
+                prevArrowASpan = document.createElement("span");
+                prevArrowASpan.setAttribute("aria-hidden", "true");
+                prevArrowASpan.innerHTML = "&laquo;"
+                prevArrowA.appendChild(prevArrowASpan);
+                prevArrow.appendChild(prevArrowA);
+                prevArrow.addEventListener("click", (event) => {
+                    let element = event.currentTarget;
+                    
+                    let i = currentIndex > 1 ? currentIndex - 1 : i;
+
+                    let startIdx = i * 100 - 100;
+                    let endIdx = i * 100;
+                    
+                    if (endIdx > fullArray.length - 1) {
+                        endIdx = fullArray.length - 1;
+                    }
+                    cleanTable();
+                    writeTableElements(fullArray, startIdx, endIdx);
+                    currentIndex = i;
+                    setActiveNavItem();
+                    window.scrollTo(0, document.body.scrollHeight);
+                });
+                navul.prepend(prevArrow);
+
+                let nextArrow = document.createElement("li");
+                nextArrow.classList.add("page-item");
+                let nextArrowA = document.createElement("a");
+                nextArrowA.classList.add("page-link");
+                nextArrowA.setAttribute("aria-label", "Next");
+                nextArrowA.style.cursor = "pointer";
+                nextArrowASpan = document.createElement("span");
+                nextArrowASpan.setAttribute("aria-hidden", "true");
+                nextArrowASpan.innerHTML = "&raquo;"
+                nextArrowA.appendChild(nextArrowASpan);
+                nextArrow.appendChild(nextArrowA);
+
+                nextArrow.addEventListener("click", (event) => {
+                    let element = event.currentTarget;
+                    
+                    let i = currentIndex < pages ? currentIndex + 1 : i;
+
+                    let startIdx = i * 100 - 100;
+                    let endIdx = i * 100;
+                    
+                    if (endIdx > fullArray.length - 1) {
+                        endIdx = fullArray.length - 1;
+                    }
+                    cleanTable();
+                    writeTableElements(fullArray, startIdx, endIdx);
+                    currentIndex = i;
+                    setActiveNavItem();
+                    window.scrollTo(0, document.body.scrollHeight);
+                });
+
+                navul.appendChild(nextArrow);
+
+
+                nav.appendChild(navul);
+                return nav;
+            }
+            return null;
+        }
+
+        function createRow(element, index) {
+            let row = document.createElement("tr");
+                    let tdzero = document.createElement("th");
+                    tdzero.scope = "row";
+                    tdzero.classList.add("text-center");
+                    tdzero.innerText = (index + 1);
+                    row.appendChild(tdzero);
+                    
+                    let tdone = document.createElement("td");
+                    
+                    let aone = document.createElement("a");
+                    aone.innerText = element.goi;
+                    aone.href = element.link;
+                    aone.target = "_blank";
+                    aone.classList.add("text-decoration-none");
+                    aone.classList.add("text-reset");
+                    tdone.appendChild(aone);
+                    
+                    row.appendChild(tdone);
+                    let tdtwo = document.createElement("td");
+                    let atwo = document.createElement("a");
+                    atwo.innerText = element.vocabulary;
+                    atwo.href = element.link;
+                    atwo.target = "_blank";
+                    atwo.classList.add("text-decoration-none");
+                    atwo.classList.add("text-reset");
+                    tdtwo.appendChild(atwo);
+
+                    row.appendChild(tdtwo);
+                    let tdthree = document.createElement("td");
+                    tdthree.innerText = element.type;
+                    row.appendChild(tdthree);
+                    let tdfour = document.createElement("td");
+                    tdfour.innerText = element.meaning;
+                    row.appendChild(tdfour);
+                    
+                    return row;
+        }
+
+        function writeTableElements(fullArray, from, to) {
+            console.log(fullArray, from, to);
+            let tableBody = document.querySelector("#mainTable tbody");
+            let array = fullArray.slice(from, to);
+            if (array) {
+                array.forEach((element) => {
+                    let row = createRow(element, fullArray.indexOf(element));
+                    tableBody.appendChild(row);
+                });
+            }
+
+
+        }
+
+        function setActiveNavItem() {
+            let navPages = [...document.querySelectorAll("#paginator > ul > li:not(:first-child, :last-child)")];
+            navPages.forEach(pageLi => {
+                pageLi.classList.remove("active");
+            });
+            navPages[currentIndex - 1].classList.add("active");
+        }
+
+        window.onload = function() {
+            cleanTable();
+            let randomArray = shuffle(N5);
+            writeTableElements(randomArray, 0, 100 > (randomArray.length - 1) ? randomArray.length - 1 : 100);
+            let pagNav = createPaginationElement(randomArray);
+            if (pagNav) {
+                document.getElementById("mainContainer").appendChild(pagNav);
+                setActiveNavItem();
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="mainContainer" class="container col-12 col-sm-8 my-5">
+        <table class="table table-bordered table-hover" id="mainTable">
+            <thead class="bg-secondary">
+                <th scope="col" class="text-center">#</th>
+                <th scope="col">ごい</th>
+                <th scope="col">Vocabulary</th>
+                <th scope="col">Type</th>
+                <th scope="col">Meaning</th>      
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
