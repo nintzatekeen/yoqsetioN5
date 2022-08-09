@@ -20,7 +20,8 @@
         }
 
         function shuffle(array) {
-            let currentIndex = array.length,  randomIndex;
+            let newArray = [...array];
+            let currentIndex = newArray.length,  randomIndex;
 
             // While there remain elements to shuffle.
             while (currentIndex != 0) {
@@ -30,11 +31,11 @@
                 currentIndex--;
 
                 // And swap it with the current element.
-                [array[currentIndex], array[randomIndex]] = [
-                array[randomIndex], array[currentIndex]];
+                [newArray[currentIndex], newArray[randomIndex]] = [
+                newArray[randomIndex], newArray[currentIndex]];
             }
 
-            return array;
+            return newArray;
         }
 
         function createPaginationElement(fullArray) {
@@ -206,6 +207,25 @@
             navPages[currentIndex - 1].classList.add("active");
         }
 
+        function limitWords() {
+            document.querySelector("#cambiar").addEventListener("click", (ev) => {
+                let limite = document.querySelector("#limite");
+                let limit = Number.parseInt(limite.value);
+                if (limit && !isNaN(limit)) {
+                    cleanTable();
+                    let limitedN5 = N5.slice(0, limit);
+                    let randomArray = shuffle(limitedN5);
+                    writeTableElements(randomArray, 0, 100 > (randomArray.length - 1) ? randomArray.length - 1 : 100);
+                    document.querySelector("#paginator").remove();
+                    let pagNav = createPaginationElement(randomArray);
+                    if (pagNav) {
+                        document.getElementById("mainContainer").appendChild(pagNav);
+                        setActiveNavItem();
+                    }
+                }
+            });
+        }
+
         window.onload = function() {
             cleanTable();
             let randomArray = shuffle(N5);
@@ -215,11 +235,18 @@
                 document.getElementById("mainContainer").appendChild(pagNav);
                 setActiveNavItem();
             }
+
+            limitWords();
         }
     </script>
 </head>
 <body>
     <div id="mainContainer" class="container col-12 col-sm-8 my-5">
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">Límite</span>
+            <input type="number" class="form-control" placeholder="100" aria-label="limite" aria-describedby="basic-addon1" id="limite">
+            <button class="btn btn-outline-secondary" type="button" id="cambiar">Cambiar</button>
+        </div>
         <table class="table table-bordered table-hover" id="mainTable">
             <thead class="bg-secondary">
                 <th scope="col" class="text-center">#</th>
