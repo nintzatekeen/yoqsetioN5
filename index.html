@@ -213,7 +213,7 @@
                 let limit = Number.parseInt(limite.value);
                 if (limit && !isNaN(limit)) {
                     cleanTable();
-                    let limitedN5 = N5.slice(0, limit);
+                    let limitedN5 = N5.slice(0, limit + 1);
                     let randomArray = shuffle(limitedN5);
                     writeTableElements(randomArray, 0, 100 > (randomArray.length - 1) ? randomArray.length - 1 : 100);
                     document.querySelector("#paginator").remove();
