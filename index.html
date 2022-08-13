@@ -160,6 +160,7 @@
                     aone.innerText = element.goi;
                     aone.href = element.link;
                     aone.target = "_blank";
+                    tdfour.classList.add("goiCol");
                     aone.classList.add("text-decoration-none");
                     aone.classList.add("text-reset");
                     tdone.appendChild(aone);
@@ -168,6 +169,7 @@
                     let tdtwo = document.createElement("td");
                     let atwo = document.createElement("a");
                     atwo.innerText = element.vocabulary;
+                    tdfour.classList.add("vocabularyCol");
                     atwo.href = element.link;
                     atwo.target = "_blank";
                     atwo.classList.add("text-decoration-none");
@@ -177,9 +179,11 @@
                     row.appendChild(tdtwo);
                     let tdthree = document.createElement("td");
                     tdthree.innerText = element.type;
+                    tdfour.classList.add("typeCol");
                     row.appendChild(tdthree);
                     let tdfour = document.createElement("td");
                     tdfour.innerText = element.meaning;
+                    tdfour.classList.add("meaningCol");
                     row.appendChild(tdfour);
                     
                     return row;
